@@ -3,35 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Cuộc Đời</title>
+    <title>Game Cuộc Đời Siêu Cấp</title>
     <style>
-        body { margin: 0; background: #121212; display: flex; justify-content: center; height: 100vh; font-family: Arial; }
-        #box { width: 100%; max-width: 400px; background: #fff; display: flex; flex-direction: column; }
-        #hd { padding: 15px; background: #eee; font-weight: bold; display: flex; justify-content: space-around; }
-        #scr { flex: 1; padding: 15px; overflow-y: auto; background: #fafafa; display: flex; flex-direction: column; gap: 10px; }
-        .item { background: #fff; padding: 10px; border-radius: 5px; border-left: 5px solid #007bff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        #ft { padding: 15px; background: #eee; }
-        button { width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 25px; font-size: 18px; font-weight: bold; }
+        body { margin: 0; background: #121212; display: flex; justify-content: center; height: 100vh; font-family: Arial, sans-serif; }
+        #box { width: 100%; max-width: 400px; background: #fff; display: flex; flex-direction: column; position: relative; }
+        #hd { padding: 12px; background: #eee; font-weight: bold; display: flex; justify-content: space-around; font-size: 13px; border-bottom: 2px solid #ccc; }
+        #scr { flex: 1; padding: 15px; overflow-y: auto; background: #fdfdfd; display: flex; flex-direction: column; gap: 8px; }
+        .item { background: #fff; padding: 10px; border-radius: 5px; border-left: 5px solid #28a745; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 14px; }
+        #ft { padding: 15px; background: #eee; border-top: 1px solid #ccc; }
+        #age-btn { width: 100%; padding: 15px; background: #007bff; color: #fff; border: none; border-radius: 25px; font-size: 18px; font-weight: bold; }
+        /* Hiệu ứng Pop-up nổi bật, làm mờ che phủ phần nền trong suốt */
+        #pop { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 100; }
+        #pop-box { width: 80%; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; }
+        #pop-txt { font-size: 16px; font-weight: bold; margin-bottom: 20px; color: #333; line-height: 1.4; }
+        .opt-btn { width: 100%; padding: 12px; margin: 6px 0; background: #f8f9fa; border: 2px solid #007bff; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; color: #007bff; }
+        .opt-btn:active { background: #007bff; color: #fff; }
     </style>
 </head>
 <body>
     <div id="box">
-        <div id="hd"><div>Tuổi: <span id="age">0</span></div><div>Tiền: <span id="mon">0</span>đ</div></div>
-        <div id="scr"><div class="item"><b>Năm 0 tuổi:</b> Bạn cất tiếng khóc chào đời!</div></div>
-        <div id="ft"><button onclick="next()">+ 1 Tuổi</button></div>
+        <div id="hd">
+            <div>Tuổi: <span id="age">0</span></div>
+            <div>Tiền: <span id="mon">0</span>đ</div>
+            <div>❤️Máu: <span id="hp">100</span>%</div>
+            <div>😊Vui: <span id="hap">100</span>%</div>
+        </div>
+        <div id="scr"><div class="item">👶 <b>Năm 0 tuổi:</b> Bạn lọt lòng mẹ, cất tiếng khóc oe oe!</div></div>
+        <div id="ft"><button id="age-btn" onclick="nextYear()">+ 1 Tuổi</button></div>
+        
+        <!-- Hộp thoại sự kiện nổi bật che khuất màn hình -->
+        <div id="pop">
+            <div id="pop-box">
+                <div id="pop-txt">Nội dung sự kiện bất ngờ</div>
+                <div id="opt-list"></div>
+            </div>
+        </div>
     </div>
     <script>
-        let a = 0, m = 0;
-        const ev = ["Bạn đi tiêm chủng và khóc nhè.","Bạn nhặt được 10.000đ.","Bạn làm vỡ bình hoa của mẹ.","Bạn nhận giấy khen học sinh giỏi.","Bạn biết yêu thầm bạn cùng bàn.","Bạn bị bắt tài liệu khi thi.","Bạn thức đêm chơi game bị đau mắt."];
-        function next() {
-            a++; m += Math.floor(Math.random() * 30000) + 5000;
-            document.getElementById('age').innerText = a;
-            document.getElementById('mon').innerText = m.toLocaleString();
-            let r = ev[Math.floor(Math.random() * ev.length)];
-            const s = document.getElementById('scr');
-            const n = document.createElement('div');
-            n.className = 'item'; n.innerHTML = `<b>Năm ${a} tuổi:</b> ${r}`;
-            s.appendChild(n); s.scrollTop = s.scrollHeight;
+        let age = 0, money = 0, hp = 100, hap = 100, isOver = false;
+        // Kho dữ liệu sự kiện cốt truyện theo tuổi, lựa chọn và kết cục tương ứng
+        const events = {
+            5: { txt: "🔥 Bạn nghịch lửa trong bếp và lỡ làm cháy cái giẻ lau của mẹ!", opts: [{t:"Tự dập lửa", r:"May mắn dập được nhưng bị phỏng tay.", stat: {hp:-15, hap:-10}}, {t:"Khóc to gọi mẹ", r:"Mẹ dập lửa kịp thời và tặng bạn một trận lươn nướng.", stat: {hap:-20, mon:-5000}}] },
+            12: { txt: "💸 Đi học về, bạn nhặt được tờ 500k rơi ngay cửa đồn công an!", opts: [{t:"Đút túi mua kem", r:"Bạn ăn kem gãy răng, lương tâm cắn rứt.", stat: {mon:500000, hp:-5, hap:-10}}, {t:"Gửi chú công an", r:"Được khen ngợi, bố mẹ tự hào thưởng lớn.", stat: {hap:30, mon:50000}}] },
+            18: { txt: "🏫 Bạn thi trượt đại học nguyện vọng 1 do ngủ quên trong phòng thi!", opts: [{t:"Đi nghĩa vụ quân sự", r:"Môi trường quân ngũ giúp bạn cơ bắp sáu múi.", stat: {hp:20, hap:10}}, {t:"Ở nhà livestream bán kem trộn", r:"Bị cộng đồng mạng bom hàng liên tục, stress nặng.", stat: {hap:-40, mon:20000}}] },
+            25: { txt: "💍 Người yêu cũ mời đi đám cưới và xếp bạn ngồi mâm người yêu cũ!", opts: [{t:"Đi phong bì phong tỏa 20k", r:"Cô dâu chú rể lườm cháy máy, bạn cười thầm.", stat: {mon:-20000, hap:25}}, {t:"Quẩy sập sàn, hát bài Thất Tình", r:"Bị họ hàng nhà trai đuổi thẳng cổ, nhục nhã.", stat: {hap:-15, hp:-10}}] },
+            40: { txt: "🎰 Bạn trúng giải độc đắc xổ số kiến thiết trị giá 2 Tỷ đồng!", opts: [{t:"Mua siêu xe, bao bạn bè", r:"Ăn chơi sa đọa, sức khỏe giảm sút nghiêm trọng.", stat: {mon:2000000000, hp:-30, hap:40}}, {t:"Gửi ngân hàng ăn lãi, ăn chay", r:"Cuộc sống bình yên, thanh tịnh.", stat: {mon:2000000000, hp:10, hap:15}}] },
+            60: { txt: "👴 Tuổi già ập đến, bạn thấy nhức mỏi xương khớp khi trời trở lạnh.", opts: [{t:"Đi tập dưỡng sinh", r:"Gặp được nhiều cụ bà vui tính, tâm hồn trẻ lại.", stat: {hp:15, hap:20}}, {t:"Chấp nhận số phận, nằm bấm điện thoại", r:"Mắt mờ, tay run, lưng còng thêm.", stat: {hp:-20, hap:-5}}] }
+        };
+        const randomEv = [
+            {txt:"Bạn ăn mì tôm quá hạn và bị tào tháo rượt cả đêm.", stat:{hp:-10, hap:-5, mon:-20000}},
+            {txt:"Bạn giúp một bà cụ qua đường và được cụ cho 50k.", stat:{hp:5, hap:15, mon:50000}},
+            {txt:"Bạn lướt tóp tóp quá 180 phút và bị đau đầu.", stat:{hp:-5, hap:-5, mon:0}},
+            {txt:"Bạn trúng thưởng thẻ cào điện thoại 20k.", stat:{hp:0, hap:10, mon:20000}}
+        ];
+        function updateUI() {
+            document.getElementById('age').innerText = age;
+            document.getElementById('mon').innerText = money.toLocaleString();
+            document.getElementById('hp').innerText = hp;
+            document.getElementById('hap').innerText = hap;
+        }
+        function addLog(text) {
+            const scr = document.getElementById('scr');
+            const div = document.createElement('div');
+            div.className = 'item'; div.innerHTML = text;
+            scr.appendChild(div); scr.scrollTop = scr.scrollHeight;
+        }
+        function checkEnding() {
+            if (hp <= 0) { addLog("🪦 <b>KẾT CỤC:</b> Bạn đã kiệt sức và quy tiên! Trò chơi kết thúc."); end(); return true; }
+            if (hap <= 0) { addLog("🤪 <b>KẾT CỤC:</b> Trầm cảm quá mức, bạn hóa điên đi lang thang! Trò chơi kết thúc."); end(); return true; }
+            if (age >= 100) { addLog("👑 <b>KẾT CỤC:</b> Thượng thọ 100 tuổi! Bạn viên tịch trong sự tôn kính của con cháu. Trò chơi kết thúc."); end(); return true; }
+            return false;
+        }
+        function end() { isOver = true; document.getElementById('age-btn').innerText = "Chơi Lại"; document.getElementById('age-btn').style.background = "#dc3545"; }
+        function nextYear() {
+            if (isOver) { location.reload(); return; }
+            age++; money += 10000;
+            updateUI();
+            if (checkEnding()) return;
+            if (events[age]) { showPop(events[age], true); } 
+            else if (Math.random() < 0.4) {
+                let r = randomEv[Math.floor(Math.random() * randomEv.length)];
+                showPop({txt: r.txt, opts: [{t:"Ok luôn", r:"Bạn đã trải qua chuyện này.", stat: r.stat}]}, false);
+            } else { addLog(`🗓️ <b>Năm ${age} tuổi:</b> Một năm trôi qua bình lặng, không có biến cố gì lớn.`); }
+        }
+        function showPop(evData, isMainEvent) {
+            document.getElementById('pop-txt').innerText = `⚡ SỰ KIỆN NĂM ${age} TUỔI:\n${evData.txt}`;
+            const list = document.getElementById('opt-list');
+            list.innerHTML = "";
+            evData.opts.forEach(o => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn'; btn.innerText = o.t;
+                btn.onclick = () => {
+                    document.getElementById('pop').style.display = 'none';
+                    money += o.stat.mon || 0; hp = Math.max(0, Math.min(100, hp + (o.stat.hp || 0))); hap = Math.max(0, Math.min(100, hap + (o.stat.hap || 0)));
+                    addLog(`👉 <b>Năm ${age} tuổi:</b> Chọn "${o.t}". ${o.r}`);
+                    updateUI(); checkEnding();
+                };
+                list.appendChild(btn);
+            });
+            document.getElementById('pop').style.display = 'flex';
         }
     </script>
 </body>
