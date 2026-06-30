@@ -41,7 +41,7 @@
     </div>
     <script>
         let age=0, money=50000, hp=100, hap=100, lks=rand(30,80), int=rand(30,80), dex=rand(30,80), isOver=false;
-        function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+        function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
         
         const mainEvents = {
             5: { txt: "🔥 Bạn nghịch lửa trong bếp và lỡ làm cháy cái giẻ lau của mẹ!", opts: [{t:"Tự dập lửa", r:"May mắn dập được nhưng bị phỏng tay.", stat: {hp:-15, hap:-10}}, {t:"Khóc to gọi mẹ", r:"Mẹ dập lửa kịp thời và tặng bạn một trận lươn nướng.", stat: {hap:-20, mon:-5000}}] },
@@ -87,10 +87,8 @@
         function nextYear(){
             if(isOver){location.reload(); return;}
             age++; money+=20000;
-            
             int = Math.max(0, Math.min(100, int + rand(-2, 2)));
             dex = Math.max(0, Math.min(100, dex + rand(-2, 2)));
-            
             if(age>60){ lks=Math.max(0,lks-rand(2,5)); int=Math.max(0,int-rand(1,3)); dex=Math.max(0,dex-rand(1,3)); }
             updateUI(); if(checkEnding()) return;
             
@@ -99,8 +97,8 @@
                 return;
             }
 
-            let diseaseChance = hap<50 ? 0.35 : (hap<80 ? 0.15 : 0);
-            if(diseaseChance > 0 && Math.random() < diseaseChance){
+            let dChance = hap<50 ? 0.35 : (hap<80 ? 0.15 : 0);
+            if(dChance > 0 && Math.random() < dChance){
                 if(money>=10000){ money-=10000; addLog(`🤒 <b>Tuổi ${age}:</b> Do thiếu vui vẻ nên mắc bệnh lẻ, người nhà bỏ ra 10k chữa trị.`); }
                 else { hap=Math.max(0,hap-15); addLog(`🤒 <b>Tuổi ${age}:</b> Mắc bệnh lẻ nhưng không có tiền chữa trị, u uất tụt mạnh điểm Vui vẻ!`); }
                 updateUI(); if(checkEnding()) return;
@@ -127,3 +125,7 @@
                     lks=Math.max(0,Math.min(100,lks+(o.stat.lks||0))); int=Math.max(0,Math.min(100,int+(o.stat.int||0))); dex=Math.max(0,Math.min(100,dex+(o.stat.dex||0)));
                     addLog(`👉 <b>Tuổi ${age}:</b> Chọn "${o.t}". ${o.r}`); updateUI(); checkEnding();
                 }; list.appendChild(b);
+            }); document.getElementById('pop').style.display='flex';
+        }
+    </script>
+</body>
