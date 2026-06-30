@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Cuộc Đời</title>
+    <style>
+        body { margin: 0; background: #121212; display: flex; justify-content: center; height: 100vh; font-family: Arial; }
+        #box { width: 100%; max-width: 400px; background: #fff; display: flex; flex-direction: column; }
+        #hd { padding: 15px; background: #eee; font-weight: bold; display: flex; justify-content: space-around; }
+        #scr { flex: 1; padding: 15px; overflow-y: auto; background: #fafafa; display: flex; flex-direction: column; gap: 10px; }
+        .item { background: #fff; padding: 10px; border-radius: 5px; border-left: 5px solid #007bff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        #ft { padding: 15px; background: #eee; }
+        button { width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 25px; font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div id="hd"><div>Tuổi: <span id="age">0</span></div><div>Tiền: <span id="mon">0</span>đ</div></div>
+        <div id="scr"><div class="item"><b>Năm 0 tuổi:</b> Bạn cất tiếng khóc chào đời!</div></div>
+        <div id="ft"><button onclick="next()">+ 1 Tuổi</button></div>
+    </div>
+    <script>
+        let a = 0, m = 0;
+        const ev = ["Bạn đi tiêm chủng và khóc nhè.","Bạn nhặt được 10.000đ.","Bạn làm vỡ bình hoa của mẹ.","Bạn nhận giấy khen học sinh giỏi.","Bạn biết yêu thầm bạn cùng bàn.","Bạn bị bắt tài liệu khi thi.","Bạn thức đêm chơi game bị đau mắt."];
+        function next() {
+            a++; m += Math.floor(Math.random() * 30000) + 5000;
+            document.getElementById('age').innerText = a;
+            document.getElementById('mon').innerText = m.toLocaleString();
+            let r = ev[Math.floor(Math.random() * ev.length)];
+            const s = document.getElementById('scr');
+            const n = document.createElement('div');
+            n.className = 'item'; n.innerHTML = `<b>Năm ${a} tuổi:</b> ${r}`;
+            s.appendChild(n); s.scrollTop = s.scrollHeight;
+        }
+    </script>
+</body>
+</html>
