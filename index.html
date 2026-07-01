@@ -1,9 +1,9 @@
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mô Phỏng Cuộc Sống Tối Giản</title>
+    <title>Mô Phỏng Tối Giản</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,7 +21,7 @@
 
         .game-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             height: 100vh;
             background: #ffffff;
             display: flex;
@@ -30,74 +30,75 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
 
-        /* 1. PHẦN ĐỈNH: Siêu gọn, gộp chung trên 1 hàng ngang */
+        /* 1. PHẦN ĐỈNH SIÊU GỌN: Thông tin nằm gọn góc TRÁI, bên phải để trống */
         .header-panel {
             background: #2c3e50;
             color: white;
-            padding: 10px 15px;
+            padding: 6px 12px;
             z-index: 10;
-            font-size: 14px;
-            font-weight: bold;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: flex-start; /* Đẩy mọi thứ sang bên trái */
             border-bottom: 1px solid #34495e;
         }
-        .header-panel .gender {
-            background: rgba(255,255,255,0.2);
-            padding: 2px 8px;
-            border-radius: 12px;
+        .profile-compact {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 12px;
+            font-weight: bold;
+        }
+        .profile-compact .gender {
+            background: rgba(255,255,255,0.2);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 11px;
         }
 
-        /* 2. PHẦN GIỮA: Dòng thời gian cuộn, diện tích rộng hơn */
+        /* 2. PHẦN GIỮA: Vùng lướt tuổi tối ưu không gian tối đa */
         .timeline-scroll {
             flex: 1;
             overflow-y: auto;
-            padding: 12px;
+            padding: 10px;
             background: #f8f9fa;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             scroll-behavior: smooth;
         }
         .age-log-item {
             background: white;
-            padding: 10px 12px;
-            border-radius: 6px;
+            padding: 8px 10px;
+            border-radius: 4px;
             border-left: 3px solid #3498db;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            font-size: 13px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            font-size: 12px;
             color: #333;
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
-        /* 3. PHẦN ĐÁY: Ép nhỏ chỉ số và nút bấm sát nhau */
+        /* 3. PHẦN ĐÁY: Ép cực mỏng để không chiếm diện tích màn hình */
         .footer-panel {
             background: white;
             border-top: 1px solid #e0e0e0;
-            padding: 10px 15px;
+            padding: 8px 12px;
             z-index: 10;
         }
-        /* Thanh chỉ số dạng thanh mảnh thu gọn */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 6px 12px;
-            margin-bottom: 10px;
+            gap: 4px 10px;
+            margin-bottom: 8px;
         }
         .stat-box {
-            font-size: 12px;
+            font-size: 11px;
             color: #555;
-            display: flex;
-            flex-direction: column;
         }
         .progress-bar {
             background: #e9ecef;
-            border-radius: 4px;
-            height: 6px;
+            border-radius: 2px;
+            height: 4px;
             width: 100%;
-            margin-top: 3px;
+            margin-top: 2px;
             overflow: hidden;
         }
         .progress {
@@ -108,18 +109,17 @@
         .bg-money { background: #27ae60; width: 60%; }
         .bg-edu { background: #3498db; width: 40%; }
 
-        /* Nút bấm dẹt xuống để tiết kiệm diện tích chiều dọc */
+        /* Nút bấm dẹt, gọn gàng */
         .next-btn {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             background: #27ae60;
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 4px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(39, 174, 96, 0.2);
         }
         .next-btn:hover {
             background: #219653;
@@ -130,20 +130,22 @@
 
 <div class="game-container">
     
-    <!-- GIAO DIỆN ĐỈNH: Tên và Giới tính luôn đập vào mắt, không bị che khuất -->
+    <!-- GIAO DIỆN ĐỈNH: Thông tin nằm gọn góc trái, phía trên bên phải hoàn toàn để trống -->
     <div class="header-panel">
-        <div>Nguyễn Văn A</div>
-        <div class="gender">Nam</div>
+        <div class="profile-compact">
+            <span>Nguyễn Văn A</span>
+            <span class="gender">Nam</span>
+        </div>
     </div>
 
-    <!-- GIAO DIỆN GIỮA: Vùng lướt tuổi rộng rãi hơn trước -->
+    <!-- GIAO DIỆN GIỮA: Vùng nội dung cuộn thoải mái -->
     <div class="timeline-scroll" id="timeline">
         <div class="age-log-item"><b>Tuổi 0:</b> Bạn vừa chào đời trong niềm hạnh phúc của gia đình.</div>
         <div class="age-log-item"><b>Tuổi 1:</b> Bạn bập bẹ biết nói những tiếng đầu tiên.</div>
         <div class="age-log-item"><b>Tuổi 2:</b> Bạn chập chững biết đi và thích khám phá thế giới xung quanh.</div>
     </div>
 
-    <!-- GIAO DIỆN ĐÁY: Chỉ số mỏng và nút bấm dẹt cực gọn -->
+    <!-- GIAO DIỆN ĐÁY: Chỉ số siêu mỏng và nút bấm tối giản -->
     <div class="footer-panel">
         <div class="stats-grid">
             <div class="stat-box">
@@ -178,7 +180,7 @@
         
         const newItem = document.createElement("div");
         newItem.className = "age-log-item";
-        newItem.innerHTML = `<b>Tuổi ${currentAge}:</b> Trải nghiệm hành trình năm ${currentAge} tuổi cực kỳ gọn gàng.`;
+        newItem.innerHTML = `<b>Tuổi ${currentAge}:</b> Nhật ký hành trình năm ${currentAge} tuổi hiển thị siêu gọn gàng.`;
         
         timeline.appendChild(newItem);
         timeline.scrollTop = timeline.scrollHeight;
@@ -187,3 +189,4 @@
 
 </body>
 </html>
+                
