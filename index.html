@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mô Phỏng Tối Giản</title>
+    <title>Mô Phỏng Siêu Gọn</title>
     <style>
         * {
             box-sizing: border-box;
@@ -15,29 +15,28 @@
             background-color: #eaeaea;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start; /* Đẩy game lên trên chút cho dễ nhìn */
+            padding: 20px;
         }
 
+        /* KHUNG CHỨA GAME: Tự co giãn theo nội dung, không chiếm hết màn hình */
         .game-container {
             width: 100%;
             max-width: 400px;
-            height: 100vh;
+            height: auto; /* Chiều cao tự động thu gọn theo nội dung */
             background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        /* 1. PHẦN ĐỈNH SIÊU GỌN: Thông tin nằm gọn góc TRÁI, bên phải để trống */
+        /* 1. PHẦN ĐỈNH: Nằm gọn góc TRÁI, bên phải trống */
         .header-panel {
             background: #2c3e50;
             color: white;
             padding: 6px 12px;
-            z-index: 10;
             display: flex;
-            justify-content: flex-start; /* Đẩy mọi thứ sang bên trái */
+            justify-content: flex-start;
             border-bottom: 1px solid #34495e;
         }
         .profile-compact {
@@ -54,9 +53,9 @@
             font-size: 11px;
         }
 
-        /* 2. PHẦN GIỮA: Vùng lướt tuổi tối ưu không gian tối đa */
+        /* 2. PHẦN GIỮA: Giới hạn chiều cao cố định để lướt mốc tuổi TRONG phạm vi này thôi */
         .timeline-scroll {
-            flex: 1;
+            max-height: 200px; /* Khóa chiều cao vùng này lại để hộp game luôn nhỏ gọn */
             overflow-y: auto;
             padding: 10px;
             background: #f8f9fa;
@@ -76,12 +75,11 @@
             line-height: 1.3;
         }
 
-        /* 3. PHẦN ĐÁY: Ép cực mỏng để không chiếm diện tích màn hình */
+        /* 3. PHẦN ĐÁY: Gắn liền ngay dưới vùng cuộn tuổi */
         .footer-panel {
             background: white;
             border-top: 1px solid #e0e0e0;
-            padding: 8px 12px;
-            z-index: 10;
+            padding: 10px 12px;
         }
         .stats-grid {
             display: grid;
@@ -130,7 +128,7 @@
 
 <div class="game-container">
     
-    <!-- GIAO DIỆN ĐỈNH: Thông tin nằm gọn góc trái, phía trên bên phải hoàn toàn để trống -->
+    <!-- THANH TRÊN CÙNG: Góc bên trái, bên phải trống -->
     <div class="header-panel">
         <div class="profile-compact">
             <span>Nguyễn Văn A</span>
@@ -138,14 +136,14 @@
         </div>
     </div>
 
-    <!-- GIAO DIỆN GIỮA: Vùng nội dung cuộn thoải mái -->
+    <!-- VÙNG CUỘN TUỔI: Bị khóa chiều cao nhỏ gọn, lướt độc lập ở đây -->
     <div class="timeline-scroll" id="timeline">
         <div class="age-log-item"><b>Tuổi 0:</b> Bạn vừa chào đời trong niềm hạnh phúc của gia đình.</div>
         <div class="age-log-item"><b>Tuổi 1:</b> Bạn bập bẹ biết nói những tiếng đầu tiên.</div>
         <div class="age-log-item"><b>Tuổi 2:</b> Bạn chập chững biết đi và thích khám phá thế giới xung quanh.</div>
     </div>
 
-    <!-- GIAO DIỆN ĐÁY: Chỉ số siêu mỏng và nút bấm tối giản -->
+    <!-- THANH CHỈ SỐ VÀ NÚT BẤM: Gắn liền ngay sát phía dưới -->
     <div class="footer-panel">
         <div class="stats-grid">
             <div class="stat-box">
@@ -183,10 +181,12 @@
         newItem.innerHTML = `<b>Tuổi ${currentAge}:</b> Nhật ký hành trình năm ${currentAge} tuổi hiển thị siêu gọn gàng.`;
         
         timeline.appendChild(newItem);
+        
+        // Tự động cuộn xuống mốc tuổi mới nhất bên trong hộp chứa
         timeline.scrollTop = timeline.scrollHeight;
     }
 </script>
 
 </body>
 </html>
-                
+
