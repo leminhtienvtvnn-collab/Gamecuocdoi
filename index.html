@@ -1,131 +1,210 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Cuộc Đời Siêu Cấp</title>
+    <title>Giao Diện Mô Phỏng Cuộc Sống</title>
     <style>
-        body { margin: 0; background: #121212; display: flex; justify-content: center; height: 100vh; font-family: Arial, sans-serif; }
-        #box { width: 100%; max-width: 400px; background: #fff; display: flex; flex-direction: column; position: relative; }
-        #hd { padding: 8px; background: #eee; font-weight: bold; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 11px; border-bottom: 2px solid #ccc; }
-        #scr { flex: 1; padding: 15px; overflow-y: auto; background: #fdfdfd; display: flex; flex-direction: column; gap: 8px; }
-        .item { background: #fff; padding: 10px; border-radius: 5px; border-left: 5px solid #28a745; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 13px; }
-        #ft { padding: 12px; background: #eee; display: flex; gap: 10px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 20px; font-size: 15px; font-weight: bold; color: #fff; }
-        #age-btn { background: #007bff; }
-        #gym-btn { background: #ffc107; color: #000; }
-        #pop { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 100; }
-        #pop-box { width: 80%; background: #fff; padding: 20px; border-radius: 15px; text-align: center; }
-        #pop-txt { font-size: 15px; font-weight: bold; margin-bottom: 15px; color: #333; line-height: 1.4; }
-        .opt-btn { width: 100%; padding: 10px; margin: 5px 0; background: #f8f9fa; border: 2px solid #007bff; border-radius: 8px; font-size: 13px; font-weight: bold; color: #007bff; }
-        .opt-btn:active { background: #007bff; color: #fff; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Khung mô phỏng màn hình điện thoại/ứng dụng */
+        .game-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* 1. PHẦN ĐỈNH: Cố định thông tin cá nhân */
+        .header-panel {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-bottom: 2px solid #34495e;
+            z-index: 10;
+        }
+        .profile-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .profile-info span {
+            background: rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        /* 2. PHẦN GIỮA: Dòng thời gian cuộn được */
+        .timeline-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+        /* Định dạng từng mốc tuổi xuất hiện từ trên xuống */
+        .age-log-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 14px;
+            color: #333;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 3. PHẦN ĐÁY: Cố định chỉ số và nút bấm */
+        .footer-panel {
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 15px 20px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        /* Khu vực chỉ số chung */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .stat-box {
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            width: 100%;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            border-radius: 10px;
+        }
+        .bg-health { background: #e74c3c; width: 85%; }
+        .bg-happy { background: #f1c40f; width: 90%; }
+        .bg-money { background: #27ae60; width: 60%; }
+        .bg-edu { background: #3498db; width: 40%; }
+
+        /* Nút bấm qua tuổi nằm cuối cùng */
+        .next-btn {
+            width: 100%;
+            padding: 14px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 3px 6px rgba(39, 174, 96, 0.2);
+        }
+        .next-btn:hover {
+            background: #219653;
+        }
+        .next-btn:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body>
-    <div id="box">
-        <div id="hd">
-            <div>🎂 Tuổi: <span id="age">0</span></div>
-            <div>💰 Tiền: <span id="mon">50,000</span>đ</div>
-            <div>❤️ Sức khỏe: <span id="hp">100</span>%</div>
-            <div>😊 Vui vẻ: <span id="hap">100</span>%</div>
-            <div>✨ Ngoại hình: <span id="lks">50</span>%</div>
-            <div>🧠 Thông minh: <span id="int">50</span>%</div>
-            <div>🎯 Khéo léo: <span id="dex">50</span>%</div>
+
+<div class="game-container">
+    
+    <!-- 1. GIAO DIỆN TÊN TUỔI GIỚI TÍNH (CỐ ĐỊNH TRÊN) -->
+    <div class="header-panel">
+        <div class="profile-info">
+            <div>Nguyễn Văn A</div>
+            <div><span>Nam</span></div>
         </div>
-        <div id="scr"><div class="item">👶 <b>Năm 0 tuổi:</b> Bạn cất tiếng khóc chào đời trong niềm hạnh phúc của gia đình!</div></div>
-        <div id="ft">
-            <button id="gym-btn" onclick="tuyetMy()">✨ Thẩm mỹ (20k)</button>
-            <button id="age-btn" onclick="nextYear()">+ 1 Tuổi</button>
-        </div>
-        <div id="pop"><div id="pop-box"><div id="pop-txt"></div><div id="opt-list"></div></div></div>
     </div>
-    <script>
-        let age=0, money=50000, hp=100, hap=100, lks=rand(30,80), int=rand(30,80), dex=rand(30,80), isOver=false;
-        function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+
+    <!-- 2. GIAO DIỆN TUỔI LƯỚT LÊN XUỐNG (CUỘN GIỮA) -->
+    <div class="timeline-scroll" id="timeline">
+        <div class="age-log-item"><b>Tuổi 0:</b> Bạn vừa chào đời trong niềm hạnh phúc của gia đình.</div>
+        <div class="age-log-item"><b>Tuổi 1:</b> Bạn bập bẹ biết nói những tiếng đầu tiên.</div>
+        <div class="age-log-item"><b>Tuổi 2:</b> Bạn chập chững biết đi và thích khám phá thế giới xung quanh.</div>
+        <!-- Các tuổi tiếp theo sẽ tự động nối đuôi xuống dưới khi bấm nút -->
+    </div>
+
+    <!-- 3. GIAO DIỆN CHỈ SỐ VÀ NÚT BẤM (CỐ ĐỊNH DƯỚI) -->
+    <div class="footer-panel">
+        <!-- Các chỉ số hiện bên dưới -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                Sức khỏe (85%)
+                <div class="progress-bar"><div class="progress bg-health"></div></div>
+            </div>
+            <div class="stat-box">
+                Hạnh phúc (90%)
+                <div class="progress-bar"><div class="progress bg-happy"></div></div>
+            </div>
+            <div class="stat-box">
+                Tiền bạc (15.000.000đ)
+                <div class="progress-bar"><div class="progress bg-money"></div></div>
+            </div>
+            <div class="stat-box">
+                Học vấn (40%)
+                <div class="progress-bar"><div class="progress bg-edu"></div></div>
+            </div>
+        </div>
+
+        <!-- Nút tuổi nằm ở cuối dưới sau chỉ số -->
+        <button class="next-btn" onclick="addAge()">Qua tuổi tiếp theo +</button>
+    </div>
+
+</div>
+
+<script>
+    let currentAge = 2;
+
+    // Hàm test logic tăng tuổi để bạn kiểm tra khả năng cuộn lướt
+    function addAge() {
+        currentAge++;
+        const timeline = document.getElementById("timeline");
         
-        const mainEvents = {
-            5: { txt: "🔥 Bạn nghịch lửa trong bếp và lỡ làm cháy cái giẻ lau của mẹ!", opts: [{t:"Tự dập lửa", r:"May mắn dập được nhưng bị phỏng tay.", stat: {hp:-15, hap:-10}}, {t:"Khóc to gọi mẹ", r:"Mẹ dập lửa kịp thời và tặng bạn một trận lươn nướng.", stat: {hap:-20, mon:-5000}}] },
-            12: { txt: "💸 Đi học về, bạn nhặt được tờ 500k rơi ngay cửa đồn công an!", opts: [{t:"Đút túi mua kem", r:"Bạn ăn kem gãy răng, lương tâm cắn rứt.", stat: {mon:500000, hp:-5, hap:-10}}, {t:"Gửi chú công an", r:"Được khen ngợi, bố mẹ tự hào thưởng lớn.", stat: {hap:30, mon:50000}}] },
-            18: { txt: "🏫 Bạn thi trượt đại học nguyện vọng 1 do ngủ quên trong phòng thi!", opts: [{t:"Đi nghĩa vụ quân sự", r:"Môi trường quân ngũ giúp bạn cơ bắp sáu múi.", stat: {hp:20, hap:10}}, {t:"Ở nhà livestream bán kem trộn", r:"Bị cộng đồng mạng bom hàng liên tục, stress nặng.", stat: {hap:-40, mon:20000}}] },
-            25: { txt: "💍 Người yêu cũ mời đi đám cưới và xếp bạn ngồi mâm người yêu cũ!", opts: [{t:"Đi phong bì phong tỏa 20k", r:"Cô dâu chú rể lườm cháy máy, bạn cười thầm.", stat: {mon:-20000, hap:25}}, {t:"Quẩy sập sàn, hát bài Thất Tình", r:"Bị họ hàng nhà trai đuổi thẳng cổ, nhục nhã.", stat: {hap:-15, hp:-10}}] },
-            40: { txt: "🎰 Bạn trúng giải độc đắc xổ số kiến thiết trị giá 2 Tỷ đồng!", opts: [{t:"Mua siêu xe, bao bạn bè", r:"Ăn chơi sa đọa, sức khỏe giảm sút nghiêm trọng.", stat: {mon:2000000000, hp:-30, hap:40}}, {t:"Gửi ngân hàng ăn lãi, ăn chay", r:"Cuộc sống bình yên, thanh tịnh.", stat: {mon:2000000000, hp:10, hap:15}}] },
-            60: { txt: "👴 Tuổi già ập đến, bạn thấy nhức mỏi xương khớp khi trời trở lạnh.", opts: [{t:"Đi tập dưỡng sinh", r:"Gặp được nhiều cụ bà vui tính, tâm hồn trẻ lại.", stat: {hp:15, hap:20}}, {t:"Chấp nhận số phận, nằm bấm điện thoại", r:"Mắt mờ, tay run, lưng còng thêm.", stat: {hp:-20, hap:-5}}] }
-        };
-
-        const randomEvents = [
-            {txt:"Bạn đi tiêm chủng và khóc nhè suốt buổi.", stat:{hp:5, hap:-10, mon:-5000}},
-            {txt:"Bạn vô tình nhặt được tờ 10.000đ rơi dưới gầm bàn học.", stat:{mon:10000, hap:10}},
-            {txt:"Bạn lỡ tay làm vỡ chiếc bình hoa yêu thích của mẹ.", stat:{hp:-5, hap:-10}},
-            {txt:"Bạn nhận được danh hiệu học sinh xuất sắc của lớp.", stat:{hap:20, int:5}},
-            {txt:"Bạn thầm thương trộm nhớ người bạn ngồi cùng bàn.", stat:{hap:15}},
-            {txt:"Bạn bị giáo viên bắt tài liệu khi đang làm bài kiểm tra.", stat:{hap:-20}},
-            {txt:"Bạn tiết kiệm được một khoản tiền nhỏ từ việc nuôi heo đất.", stat:{mon:30000, hap:5}},
-            {txt:"Bạn thức cả đêm để chơi trò chơi điện tử và bị đau mắt.", stat:{hp:-10, hap:10}}
-        ];
-
-        function updateUI(){
-            document.getElementById('age').innerText=age; document.getElementById('mon').innerText=money.toLocaleString();
-            document.getElementById('hp').innerText=hp; document.getElementById('hap').innerText=hap;
-            document.getElementById('lks').innerText=lks; document.getElementById('int').innerText=int; document.getElementById('dex').innerText=dex;
-        }
-        function addLog(t){const s=document.getElementById('scr'); const d=document.createElement('div'); d.className='item'; d.innerHTML=t; s.appendChild(d); s.scrollTop=s.scrollHeight;}
+        // Tạo một mốc tuổi mới xếp phía dưới
+        const newItem = document.createElement("div");
+        newItem.className = "age-log-item";
+        newItem.innerHTML = `<b>Tuổi ${currentAge}:</b> Đây là giao diện test hành trình năm ${currentAge} tuổi của bạn. Nội dung hiển thị rõ ràng, không bị che khuất.`;
         
-        function checkEnding(){
-            if(hp<50 && Math.random()<0.15){addLog("🪦 <b>KẾT CỤC:</b> Sức khỏe dưới 50% dẫn đến đột quỵ bất ngờ! Bạn đã tử vong."); end(); return true;}
-            if(hp<=0){addLog("🪦 <b>KẾT CỤC:</b> Sức khỏe của bạn đã cạn kiệt! Trò chơi kết thúc."); end(); return true;}
-            if(hap<=0){addLog("🤪 <b>KẾT CỤC:</b> Trầm cảm quá mức, bạn hóa điên đi lang thang!"); end(); return true;}
-            if(age>=100){addLog("👑 <b>KẾT CỤC:</b> Thượng thọ 100 tuổi viên tịch trong bình yên!"); end(); return true;}
-            return false;
-        }
-        function end(){isOver=true; document.getElementById('age-btn').innerText="Chơi Lại"; document.getElementById('age-btn').style.background="#dc3545";}
+        timeline.appendChild(newItem);
         
-        function tuyetMy(){
-            if(money<20000){alert("Không đủ tiền thẩm mỹ!"); return;}
-            money-=20000; lks=Math.min(100,lks+rand(10,20)); hap=Math.min(100,hap+5); updateUI(); addLog("💄 Bạn bỏ 20k đi thẩm mỹ nâng cấp ngoại hình!");
-        }
+        // Tự động cuộn xuống mốc tuổi mới nhất
+        timeline.scrollTop = timeline.scrollHeight;
+    }
+</script>
 
-        function nextYear(){
-            if(isOver){location.reload(); return;}
-            age++; money+=20000;
-            int = Math.max(0, Math.min(100, int + rand(-2, 2)));
-            dex = Math.max(0, Math.min(100, dex + rand(-2, 2)));
-            if(age>60){ lks=Math.max(0,lks-rand(2,5)); int=Math.max(0,int-rand(1,3)); dex=Math.max(0,dex-rand(1,3)); }
-            updateUI(); if(checkEnding()) return;
-            
-            if(hp<80 && Math.random()<0.25) {
-                addLog(`⚠️ <b>Tuổi ${age}:</b> Màn hình hiển thị bạn KHÔNG ĐỦ SỨC KHỎE nên không thực hiện được sự kiện năm nay.`);
-                return;
-            }
-
-            let dChance = hap<50 ? 0.35 : (hap<80 ? 0.15 : 0);
-            if(dChance > 0 && Math.random() < dChance){
-                if(money>=10000){ money-=10000; addLog(`🤒 <b>Tuổi ${age}:</b> Do thiếu vui vẻ nên mắc bệnh lẻ, người nhà bỏ ra 10k chữa trị.`); }
-                else { hap=Math.max(0,hap-15); addLog(`🤒 <b>Tuổi ${age}:</b> Mắc bệnh lẻ nhưng không có tiền chữa trị, u uất tụt mạnh điểm Vui vẻ!`); }
-                updateUI(); if(checkEnding()) return;
-            }
-
-            if(mainEvents[age]){
-                showPop(mainEvents[age]);
-            } else if(Math.random()<0.5){
-                let r = randomEvents[Math.floor(Math.random() * randomEvents.length)];
-                showPop({txt: r.txt, opts: [{t:"Đã hiểu", r:"Bạn đã trải qua chuyện này.", stat: r.stat}]});
-            } else {
-                addLog(`🗓️ <b>Năm ${age} tuổi:</b> Một năm trôi qua bình lặng.`);
-            }
-        }
-
-        function showPop(evData){
-            document.getElementById('pop-txt').innerText=`⚡ SỰ KIỆN NĂM ${age} TUỔI:\n${evData.txt}`;
-            const list=document.getElementById('opt-list'); list.innerHTML="";
-            evData.opts.forEach(o=>{
-                const b=document.createElement('button'); b.className='opt-btn'; b.innerText=o.t;
-                b.onclick=()=>{
-                    document.getElementById('pop').style.display='none'; money+=o.stat.mon||0;
-                    hp=Math.max(0,Math.min(100,hp+(o.stat.hp||0))); hap=Math.max(0,Math.min(100,hap+(o.stat.hap||0)));
-                    lks=Math.max(0,Math.min(100,lks+(o.stat.lks||0))); int=Math.max(0,Math.min(100,int+(o.stat.int||0))); dex=Math.max(0,Math.min(100,dex+(o.stat.dex||0)));
-                    addLog(`👉 <b>Tuổi ${age}:</b> Chọn "${o.t}". ${o.r}`); updateUI(); checkEnding();
-                }; list.appendChild(b);
-            }); document.getElementById('pop').style.display='flex';
-        }
-    </script>
 </body>
+</html>
