@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+            <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giao Diện Mô Phỏng Cuộc Sống</title>
+    <title>Mô Phỏng Cuộc Sống Tối Giản</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,129 +12,117 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background-color: #f4f6f9;
+            background-color: #eaeaea;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
 
-        /* Khung mô phỏng màn hình điện thoại/ứng dụng */
         .game-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             height: 100vh;
             background: #ffffff;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
 
-        /* 1. PHẦN ĐỈNH: Cố định thông tin cá nhân */
+        /* 1. PHẦN ĐỈNH: Siêu gọn, gộp chung trên 1 hàng ngang */
         .header-panel {
             background: #2c3e50;
             color: white;
-            padding: 15px 20px;
-            border-bottom: 2px solid #34495e;
+            padding: 10px 15px;
             z-index: 10;
-        }
-        .profile-info {
+            font-size: 14px;
+            font-weight: bold;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 16px;
-            font-weight: 600;
+            border-bottom: 1px solid #34495e;
         }
-        .profile-info span {
-            background: rgba(255,255,255,0.1);
-            padding: 6px 12px;
-            border-radius: 20px;
+        .header-panel .gender {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
         }
 
-        /* 2. PHẦN GIỮA: Dòng thời gian cuộn được */
+        /* 2. PHẦN GIỮA: Dòng thời gian cuộn, diện tích rộng hơn */
         .timeline-scroll {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            background: #fafafa;
+            padding: 12px;
+            background: #f8f9fa;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
             scroll-behavior: smooth;
         }
-        /* Định dạng từng mốc tuổi xuất hiện từ trên xuống */
         .age-log-item {
             background: white;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border-left: 4px solid #3498db;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            font-size: 14px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #3498db;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            font-size: 13px;
             color: #333;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            line-height: 1.4;
         }
 
-        /* 3. PHẦN ĐÁY: Cố định chỉ số và nút bấm */
+        /* 3. PHẦN ĐÁY: Ép nhỏ chỉ số và nút bấm sát nhau */
         .footer-panel {
             background: white;
             border-top: 1px solid #e0e0e0;
-            padding: 15px 20px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            padding: 10px 15px;
             z-index: 10;
         }
-        /* Khu vực chỉ số chung */
+        /* Thanh chỉ số dạng thanh mảnh thu gọn */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 15px;
+            gap: 6px 12px;
+            margin-bottom: 10px;
         }
         .stat-box {
-            font-size: 13px;
-            font-weight: bold;
+            font-size: 12px;
             color: #555;
+            display: flex;
+            flex-direction: column;
         }
         .progress-bar {
             background: #e9ecef;
-            border-radius: 10px;
-            height: 10px;
+            border-radius: 4px;
+            height: 6px;
             width: 100%;
-            margin-top: 5px;
+            margin-top: 3px;
             overflow: hidden;
         }
         .progress {
             height: 100%;
-            border-radius: 10px;
         }
         .bg-health { background: #e74c3c; width: 85%; }
         .bg-happy { background: #f1c40f; width: 90%; }
         .bg-money { background: #27ae60; width: 60%; }
         .bg-edu { background: #3498db; width: 40%; }
 
-        /* Nút bấm qua tuổi nằm cuối cùng */
+        /* Nút bấm dẹt xuống để tiết kiệm diện tích chiều dọc */
         .next-btn {
             width: 100%;
-            padding: 14px;
+            padding: 10px;
             background: #27ae60;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
-            box-shadow: 0 3px 6px rgba(39, 174, 96, 0.2);
+            box-shadow: 0 2px 4px rgba(39, 174, 96, 0.2);
         }
         .next-btn:hover {
             background: #219653;
-        }
-        .next-btn:active {
-            transform: scale(0.98);
         }
     </style>
 </head>
@@ -142,45 +130,40 @@
 
 <div class="game-container">
     
-    <!-- 1. GIAO DIỆN TÊN TUỔI GIỚI TÍNH (CỐ ĐỊNH TRÊN) -->
+    <!-- GIAO DIỆN ĐỈNH: Tên và Giới tính luôn đập vào mắt, không bị che khuất -->
     <div class="header-panel">
-        <div class="profile-info">
-            <div>Nguyễn Văn A</div>
-            <div><span>Nam</span></div>
-        </div>
+        <div>Nguyễn Văn A</div>
+        <div class="gender">Nam</div>
     </div>
 
-    <!-- 2. GIAO DIỆN TUỔI LƯỚT LÊN XUỐNG (CUỘN GIỮA) -->
+    <!-- GIAO DIỆN GIỮA: Vùng lướt tuổi rộng rãi hơn trước -->
     <div class="timeline-scroll" id="timeline">
         <div class="age-log-item"><b>Tuổi 0:</b> Bạn vừa chào đời trong niềm hạnh phúc của gia đình.</div>
         <div class="age-log-item"><b>Tuổi 1:</b> Bạn bập bẹ biết nói những tiếng đầu tiên.</div>
         <div class="age-log-item"><b>Tuổi 2:</b> Bạn chập chững biết đi và thích khám phá thế giới xung quanh.</div>
-        <!-- Các tuổi tiếp theo sẽ tự động nối đuôi xuống dưới khi bấm nút -->
     </div>
 
-    <!-- 3. GIAO DIỆN CHỈ SỐ VÀ NÚT BẤM (CỐ ĐỊNH DƯỚI) -->
+    <!-- GIAO DIỆN ĐÁY: Chỉ số mỏng và nút bấm dẹt cực gọn -->
     <div class="footer-panel">
-        <!-- Các chỉ số hiện bên dưới -->
         <div class="stats-grid">
             <div class="stat-box">
-                Sức khỏe (85%)
+                Sức khỏe: 85%
                 <div class="progress-bar"><div class="progress bg-health"></div></div>
             </div>
             <div class="stat-box">
-                Hạnh phúc (90%)
+                Hạnh phúc: 90%
                 <div class="progress-bar"><div class="progress bg-happy"></div></div>
             </div>
             <div class="stat-box">
-                Tiền bạc (15.000.000đ)
+                Tiền bạc: 15.000.000đ
                 <div class="progress-bar"><div class="progress bg-money"></div></div>
             </div>
             <div class="stat-box">
-                Học vấn (40%)
+                Học vấn: 40%
                 <div class="progress-bar"><div class="progress bg-edu"></div></div>
             </div>
         </div>
 
-        <!-- Nút tuổi nằm ở cuối dưới sau chỉ số -->
         <button class="next-btn" onclick="addAge()">Qua tuổi tiếp theo +</button>
     </div>
 
@@ -189,19 +172,15 @@
 <script>
     let currentAge = 2;
 
-    // Hàm test logic tăng tuổi để bạn kiểm tra khả năng cuộn lướt
     function addAge() {
         currentAge++;
         const timeline = document.getElementById("timeline");
         
-        // Tạo một mốc tuổi mới xếp phía dưới
         const newItem = document.createElement("div");
         newItem.className = "age-log-item";
-        newItem.innerHTML = `<b>Tuổi ${currentAge}:</b> Đây là giao diện test hành trình năm ${currentAge} tuổi của bạn. Nội dung hiển thị rõ ràng, không bị che khuất.`;
+        newItem.innerHTML = `<b>Tuổi ${currentAge}:</b> Trải nghiệm hành trình năm ${currentAge} tuổi cực kỳ gọn gàng.`;
         
         timeline.appendChild(newItem);
-        
-        // Tự động cuộn xuống mốc tuổi mới nhất
         timeline.scrollTop = timeline.scrollHeight;
     }
 </script>
